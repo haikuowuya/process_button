@@ -19,9 +19,9 @@ public class FlatButton extends Button
 	private StateListDrawable mProgressDrawable;
 	private CharSequence mNormalText;
 	private float mCornerRadius;
-	private static final int DEFAULT_PRESSED_COLOR = 0xFFFF0000;
+	private static final int DEFAULT_PRESSED_COLOR = 0x88FF0000;
 	private static final int DEFAULT_NORMAL_COLOR = 0xFF0000FF;
-	protected static final int DEFAULT_PROGRESS_COLOR=0xFFAA6CC;
+	protected static final int DEFAULT_PROGRESS_COLOR=0xFFFF0000;
 	protected static final int DEFAULT_COMPLETE_COLOR=0xFF99CC00;
 	protected static final int DEFAULT_ERROR_COLOR=0xFFFF4444;
 
@@ -68,7 +68,7 @@ public class FlatButton extends Button
 			mCornerRadius = attr.getDimension(R.styleable.FlatButton_cornerRadius, defValue);
 			mNormalDrawable.addState(new int[] { android.R.attr.state_pressed }, createPressedDrawable(attr));
 			mNormalDrawable.addState(new int[] {}, createNormalDrawable(attr));
-			mProgressDrawable.addState(new int[]{}, mProgressDrawable);
+			mProgressDrawable.addState(new int[]{}, createProgressDrawable(attr));
 		}
 		finally
 		{
