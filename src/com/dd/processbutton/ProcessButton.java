@@ -12,10 +12,9 @@ import com.roboo.process.button.R;
 
 public abstract class ProcessButton extends FlatButton
 {
-
 	private int mProgress;
-	private int mMaxProgress;
-	private int mMinProgress;
+	private static final int MIN_PROGRESS = 0;
+	private static final int MAX_PROGRESS = 100;
 
 	private GradientDrawable mProgressDrawable;
 	private GradientDrawable mCompleteDrawable;
@@ -33,30 +32,30 @@ public abstract class ProcessButton extends FlatButton
 
 	public ProcessButton(Context context, AttributeSet attrs)
 	{
-		super(context, attrs);
-		init(context, attrs);
+		this(context, attrs, 0);
 	}
 
 	public ProcessButton(Context context)
 	{
-		super(context);
-		init(context, null);
+		this(context, null);
 	}
 
 	private void init(Context context, AttributeSet attrs)
 	{
-		mMinProgress = 0;
-		mMaxProgress = 100;
-
-		mProgressDrawable = (GradientDrawable) getDrawable(R.drawable.rect_progress).mutate();
+		mProgressDrawable = (GradientDrawable) new GradientDrawable().mutate();
+		mProgressDrawable.setShape(GradientDrawable.RECTANGLE);
+		mProgressDrawable.setColor(DEFAULT_PROGRESS_COLOR);
 		mProgressDrawable.setCornerRadius(getCornerRadius());
 
-		mCompleteDrawable = (GradientDrawable) getDrawable(R.drawable.rect_complete).mutate();
+		mCompleteDrawable = (GradientDrawable) new GradientDrawable().mutate();
+		mCompleteDrawable.setShape(GradientDrawable.RECTANGLE);
+		mCompleteDrawable.setColor(DEFAULT_COMPLETE_COLOR);
 		mCompleteDrawable.setCornerRadius(getCornerRadius());
 
-		mErrorDrawable = (GradientDrawable) getDrawable(R.drawable.rect_error).mutate();
+		mErrorDrawable = (GradientDrawable) new GradientDrawable().mutate();
+		mErrorDrawable.setShape(GradientDrawable.RECTANGLE);
+		mErrorDrawable.setColor(DEFAULT_ERROR_COLOR);
 		mErrorDrawable.setCornerRadius(getCornerRadius());
-
 		if (attrs != null)
 		{
 			initAttributes(context, attrs);
@@ -71,25 +70,19 @@ public abstract class ProcessButton extends FlatButton
 		{
 			return;
 		}
-
 		try
 		{
 			mLoadingText = attr.getString(R.styleable.ProcessButton_textProgress);
 			mCompleteText = attr.getString(R.styleable.ProcessButton_textComplete);
 			mErrorText = attr.getString(R.styleable.ProcessButton_textError);
-
-			int purple = getColor(R.color.purple_progress);
-			int colorProgress = attr.getColor(R.styleable.ProcessButton_colorProgress, purple);
+			int colorProgress = attr.getColor(R.styleable.ProcessButton_colorProgress, DEFAULT_PROGRESS_COLOR);
 			mProgressDrawable.setColor(colorProgress);
 
-			int green = getColor(R.color.green_complete);
-			int colorComplete = attr.getColor(R.styleable.ProcessButton_colorComplete, green);
+			int colorComplete = attr.getColor(R.styleable.ProcessButton_colorComplete, DEFAULT_COMPLETE_COLOR);
 			mCompleteDrawable.setColor(colorComplete);
 
-			int red = getColor(R.color.red_error);
-			int colorError = attr.getColor(R.styleable.ProcessButton_colorError, red);
+			int colorError = attr.getColor(R.styleable.ProcessButton_colorError, DEFAULT_ERROR_COLOR);
 			mErrorDrawable.setColor(colorError);
-
 		}
 		finally
 		{
@@ -100,15 +93,15 @@ public abstract class ProcessButton extends FlatButton
 	public void setProgress(int progress)
 	{
 		mProgress = progress;
-		if (mProgress == mMinProgress)
+		if (mProgress == MIN_PROGRESS)
 		{
 			onNormalState();
 		}
-		else if (mProgress == mMaxProgress)
+		else if (mProgress == MAX_PROGRESS)
 		{
 			onCompleteState();
 		}
-		else if (mProgress < mMinProgress)
+		else if (mProgress < MIN_PROGRESS)
 		{
 			onErrorState();
 		}
@@ -134,7 +127,7 @@ public abstract class ProcessButton extends FlatButton
 		{
 			setText(getLoadingText());
 		}
-		setBackgroundCompat(getNormalDrawable());
+		setBackgroundCompat(getProgressDrawable());
 	}
 
 	protected void onCompleteState()
@@ -158,12 +151,10 @@ public abstract class ProcessButton extends FlatButton
 	@Override
 	protected void onDraw(Canvas canvas)
 	{
-		// progress
-		if (mProgress > mMinProgress && mProgress < mMaxProgress)
+		if (mProgress > MIN_PROGRESS && mProgress < MAX_PROGRESS)
 		{
 			drawProgress(canvas);
 		}
-
 		super.onDraw(canvas);
 	}
 
@@ -176,12 +167,12 @@ public abstract class ProcessButton extends FlatButton
 
 	public int getMaxProgress()
 	{
-		return mMaxProgress;
+		return MAX_PROGRESS;
 	}
 
 	public int getMinProgress()
 	{
-		return mMinProgress;
+		return MIN_PROGRESS;
 	}
 
 	public GradientDrawable getProgressDrawable()
@@ -276,7 +267,6 @@ public abstract class ProcessButton extends FlatButton
 	 */
 	public static class SavedState extends BaseSavedState
 	{
-
 		private int mProgress;
 
 		public SavedState(Parcelable parcel)

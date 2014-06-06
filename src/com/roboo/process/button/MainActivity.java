@@ -1,5 +1,6 @@
 package com.roboo.process.button;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,11 +11,15 @@ import android.widget.ListView;
 public class MainActivity extends ListActivity
 {
 
+	public static void actionMain(Activity activity)
+	{
+		activity.startActivity(new Intent(activity, MainActivity.class));
+	}
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-
+		System.out.println(" MainActivity onCreate");
 		String[] items = getResources().getStringArray(R.array.sample_list);
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
@@ -41,7 +46,15 @@ public class MainActivity extends ListActivity
 		case 4:
 			startStateSampleActivity();
 			break;
+		case 5:
+			startTestActivity();
+			break;
 		}
+	}
+
+	private void startTestActivity()
+	{
+		TestActivity.actionTest(this);
 	}
 
 	private void startStateSampleActivity()
@@ -67,5 +80,53 @@ public class MainActivity extends ListActivity
 	{
 		Intent intent = new Intent(this, MessageActivity.class);
 		startActivity(intent);
+	}
+
+	@Override
+	protected void onStart()
+	{
+
+		System.out.println(" MainActivity  onStart");
+		super.onStart();
+	}
+
+	@Override
+	protected void onRestart()
+	{
+		System.out.println(" MainActivity  onRestart");
+
+		super.onRestart();
+	}
+
+	@Override
+	protected void onResume()
+	{
+		System.out.println(" MainActivity  onResume");
+
+		super.onResume();
+	}
+
+	@Override
+	protected void onPause()
+	{
+		System.out.println(" MainActivity  onPause");
+
+		super.onPause();
+	}
+
+	@Override
+	protected void onStop()
+	{
+
+		System.out.println(" MainActivity  onStop");
+		super.onStop();
+	}
+
+	@Override
+	protected void onDestroy()
+	{
+		System.out.println(" MainActivity  onDestroy");
+
+		super.onDestroy();
 	}
 }
